@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Strava Stats – 2025 Dashboard</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- GSAP for smooth animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <link rel="stylesheet" href="src/styles.css">
+</head>
+<body>
+  <header>
+    <h1 id="title"></h1>
+    <p class="subtitle">Live, beautiful insights from your Strava journey.</p>
+    <div id="controls">
+      <select id="year-select"></select>
+      <button id="refresh-btn">Refresh Now</button>
+      <button id="download-btn">Download Data</button>
+    </div>
+  </header>
+
+  <!-- Summary Cards -->
+  <section class="grid" id="summary-cards"></section>
+
+  <!-- Chart -->
+  <section id="chart-wrapper">
+    <canvas id="yearlyChart"></canvas>
+  </section>
+
+  <!-- Top Activities -->
+  <section class="grid" id="top-cards"></section>
+
+  <!-- Scripts -->
+  <script src="src/config.js"></script>
+  <script src="src/utils.js"></script>
+  <script src="src/strava-api.js"></script>
+  <script src="src/data-aggregation.js"></script>
+  <script src="src/rendering.js"></script>
+  <script src="src/app.js"></script>
+</body>
+</html>
