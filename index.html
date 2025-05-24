@@ -1,46 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en" data-theme="system">
 <head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Strava Stats – 2025 Dashboard</title>
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- GSAP for smooth animations -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-  <link rel="stylesheet" href="src/styles.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>My Strava Dashboard</title>
+  <meta name="description" content="Fully responsive, offline-first Strava yearly dashboard." />
+  <link rel="icon" href="assets/logo.svg" />
+  <!-- Tailwind (JIT CDN for fast preview – Vite swaps to built CSS) -->
+  <script src="https://cdn.tailwindcss.com?plugins=typography,aspect-ratio"></script>
+  <script>
+    // colour mode ⇄ system toggle
+    const theme = localStorage.theme ?? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+  </script>
+  <style>
+    /* fluid type scale & card glass */
+    :root { --step-0: clamp(0.9rem, 0.86rem + 0.2vw, 1rem); --step-5: clamp(3rem, 2.4rem + 2vw, 4rem); }
+    html { font-size: 16px; }
+    .glass  { @apply backdrop-blur-md bg-white/5 dark:bg-slate-900/40 shadow-lg rounded-2xl; }
+  </style>
 </head>
-<body>
-  <header>
-    <h1 id="title"></h1>
-    <p class="subtitle">Live, beautiful insights from your Strava journey.</p>
-    <div id="controls">
-      <select id="year-select"></select>
-      <button id="refresh-btn">Refresh Now</button>
-      <button id="download-btn">Download Data</button>
+<body class="relative min-h-screen bg-gradient-to-br from-slate-50 to-indigo-50 dark:from-slate-950 dark:to-slate-900 text-slate-900 dark:text-slate-50 selection:bg-amber-400 selection:text-black antialiased motion-safe:scroll-smooth">
+
+  <!-- Parallax hero -->
+  <header class="relative h-[45vh] md:h-[60vh] overflow-hidden">
+    <img src="assets/confetti.webp" alt="" class="absolute inset-0 w-full h-full object-cover scale-110 animate-heroParallax pointer-events-none" />
+    <div class="absolute inset-0 grid place-items-center">
+      <h1 class="text-[--step-5] font-extrabold drop-shadow-xl">2025 in Motion</h1>
     </div>
   </header>
 
-  <!-- Summary Cards -->
-  <section class="grid" id="summary-cards"></section>
+  <main id="app" class="px-4 md:px-6 -mt-24 space-y-12 pb-36 relative z-10"></main>
 
-  <!-- Chart -->
-  <section id="chart-wrapper">
-    <canvas id="yearlyChart"></canvas>
-  </section>
+  <!-- Year picker lives above everything to stay sticky -->
+  <nav id="yearNav" class="sticky top-2 flex gap-2 justify-center"></nav>
 
-  <!-- Top Activities -->
-  <section class="grid" id="top-cards"></section>
+  <!-- Theme toggle (bottom-right FAB) -->
+  <button aria-label="Toggle colour theme"
+          id="themeBtn"
+          class="fixed bottom-4 right-4 w-12 h-12 glass grid place-items-center hover:scale-105 transition">
+    🌓
+  </button>
 
   <!-- Scripts -->
-  <script src="src/config.js"></script>
-  <script src="src/utils.js"></script>
-  <script src="src/strava-api.js"></script>
-  <script src="src/data-aggregation.js"></script>
-  <script src="src/rendering.js"></script>
-  <script src="src/app.js"></script>
-</body>
-</html>
+  <script type="module" src="dashboard.js"></script>
+  <!-- Register SW -->
+  <script> if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js'); </script>
+</body></html>
