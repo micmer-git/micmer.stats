@@ -1,0 +1,93 @@
+{
+  "generated_at": "2025-05-24T10:00:00Z",
+  "activities": [
+    {
+      "id": 9001,
+      "type": "Ride",
+      "start_date": "2024-04-15T07:30:00Z",
+      "start_date_epoch": 1713166200,
+      "distance": 50000,
+      "moving_time": 5400,
+      "total_elevation_gain": 800,
+      "average_watts": 190,
+      "segment_efforts": [
+        { "segment": { "id": 1234567 } }
+      ]
+    },
+    {
+      "id": 9002,
+      "type": "Run",
+      "start_date": "2024-12-31T18:00:00Z",
+      "start_date_epoch": 1735668000,
+      "distance": 10000,
+      "moving_time": 3000,
+      "total_elevation_gain": 50,
+      "segment_efforts": []
+    },
+    {
+      "id": 9003,
+      "type": "Ride",
+      "start_date": "2025-01-03T08:15:00Z",
+      "start_date_epoch": 1735882500,
+      "distance": 30000,
+      "moving_time": 3600,
+      "total_elevation_gain": 400,
+      "average_watts": 200,
+      "segment_efforts": [
+        { "segment": { "id": 7654321 } }
+      ]
+    },
+    {
+      "id": 9004,
+      "type": "Run",
+      "start_date": "2025-04-02T06:45:00Z",
+      "start_date_epoch": 1743576300,
+      "distance": 15000,
+      "moving_time": 4200,
+      "total_elevation_gain": 150,
+      "segment_efforts": []
+    },
+    {
+      "id": 9005,
+      "type": "Ride",
+      "start_date": "2025-04-06T09:20:00Z",
+      "start_date_epoch": 1743910800,
+      "distance": 120000,
+      "moving_time": 14400,
+      "total_elevation_gain": 2500,
+      "average_watts": 210,
+      "segment_efforts": [
+        { "segment": { "id": 1234567 } },
+        { "segment": { "id": 7654321 } }
+      ]
+    }
+  ],
+  "years": [
+    {
+      "year": 2024,
+      "all":  { "count": 2, "distance_km": 60.0,  "elev_m": 850 },
+      "run":  { "distance_km": 10.0 },
+      "ride": { "distance_km": 50.0 },
+      "monthly": [
+        { "m": 4,  "km": 50.0 },
+        { "m": 12, "km": 10.0 }
+      ],
+      "load":         { "ctl": {}, "atl": {} },
+      "power_curve":  [],
+      "segment_counts": { "1234567": 1 }
+    },
+    {
+      "year": 2025,
+      "all":  { "count": 3, "distance_km": 165.0, "elev_m": 3050 },
+      "run":  { "distance_km": 15.0 },
+      "ride": { "distance_km": 150.0 },
+      "monthly": [
+        { "m": 1, "km": 30.0 },
+        { "m": 4, "km": 135.0 }
+      ],
+      "load":         { "ctl": {}, "atl": {} },
+      "power_curve":  [],
+      "segment_counts": { "7654321": 2, "1234567": 1 }
+    }
+  ]
+}
