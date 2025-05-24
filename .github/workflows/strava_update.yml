@@ -1,0 +1,29 @@
+name: Update Strava data
+
+on:
+  schedule:
+    - cron:  '13 2 * * *'    # daily at 02:13 UTC (~04:13 CET)
+  workflow_dispatch:
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
+      with: {python-version: '3.12'}
+    - run: pip install -r requirements.txt
+    - run: python fetch_strava.py
+      env:
+        STRAVA_CLIENT_ID:     ${{ secrets.STRAVA_CLIENT_ID }}
+        STRAVA_CLIENT_SECRET: ${{ secrets.STRAVA_CLIENT_SECRET }}
+        STRAVA_REFRESH_TOKEN: ${{ secrets.STRAVA_REFRESH_TOKEN }}
+
+    - name: Commit & push
+      run: |
+        git config user.name  "Strava Bot"
+        git config user.email "action@github.com"
+        git add data/history.json
+        git diff --cached --quiet || git commit -m "chore: auto-update Strava data"
+        git push
