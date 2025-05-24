@@ -1,46 +1,396 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Strava Stats – 2025 Dashboard</title>
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- GSAP for smooth animations -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-  <link rel="stylesheet" href="src/styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strava Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <header>
-    <h1 id="title"></h1>
-    <p class="subtitle">Live, beautiful insights from your Strava journey.</p>
-    <div id="controls">
-      <select id="year-select"></select>
-      <button id="refresh-btn">Refresh Now</button>
-      <button id="download-btn">Download Data</button>
+    <!-- Header Section -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="profile">
+                    <img src="assets/profile-placeholder.jpg" alt="Profile" class="profile-image" id="profile-image">
+                    <h1 id="user-name">Athlete Dashboard</h1>
+                </div>
+                <div class="quick-stats">
+                    <div class="quick-stat">
+                        <div class="quick-stat-value" id="week-distance">0</div>
+                        <div class="quick-stat-label">This Week</div>
+                    </div>
+                    <div class="quick-stat">
+                        <div class="quick-stat-value" id="month-distance">0</div>
+                        <div class="quick-stat-label">This Month</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Activity Type Selector -->
+    <div class="container">
+        <div class="activity-selector">
+            <div class="activity-type active" data-type="all">All Activities</div>
+            <div class="activity-type" data-type="ride">Cycling</div>
+            <div class="activity-type" data-type="run">Running</div>
+            <div class="activity-type" data-type="swim">Swimming</div>
+        </div>
     </div>
-  </header>
 
-  <!-- Summary Cards -->
-  <section class="grid" id="summary-cards"></section>
+    <!-- Main Content -->
+    <main>
+        <!-- Year Overview Section -->
+        <section class="section" id="year-overview">
+            <div class="container">
+                <h2>Year Overview</h2>
+                
+                <!-- Current Year Card (expanded by default) -->
+                <div class="glass-card year-card expanded" id="current-year-card">
+                    <div class="year-header">
+                        <h3 id="current-year">2025</h3>
+                        <span class="toggle-icon"><i class="fas fa-chevron-up"></i></span>
+                    </div>
+                    <div class="year-content">
+                        <div class="metric-grid">
+                            <div class="metric-item">
+                                <div class="circular-progress">
+                                    <canvas id="distance-progress"></canvas>
+                                    <div class="circular-progress-value" id="total-distance">0</div>
+                                </div>
+                                <div class="metric-label">Total Distance (km)</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="circular-progress">
+                                    <canvas id="time-progress"></canvas>
+                                    <div class="circular-progress-value" id="total-time">0</div>
+                                </div>
+                                <div class="metric-label">Total Time (h)</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="circular-progress">
+                                    <canvas id="elevation-progress"></canvas>
+                                    <div class="circular-progress-value" id="total-elevation">0</div>
+                                </div>
+                                <div class="metric-label">Elevation (m)</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="circular-progress">
+                                    <canvas id="activities-progress"></canvas>
+                                    <div class="circular-progress-value" id="activity-count">0</div>
+                                </div>
+                                <div class="metric-label">Activities</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Previous Year Card (collapsed by default) -->
+                <div class="glass-card year-card" id="previous-year-card">
+                    <div class="year-header">
+                        <h3 id="previous-year">2024</h3>
+                        <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                    </div>
+                    <div class="year-content">
+                        <div class="metric-grid">
+                            <div class="metric-item">
+                                <div class="metric-value" id="prev-total-distance">0</div>
+                                <div class="metric-label">Total Distance (km)</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value" id="prev-total-time">0</div>
+                                <div class="metric-label">Total Time (h)</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value" id="prev-total-elevation">0</div>
+                                <div class="metric-label">Elevation (m)</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value" id="prev-activity-count">0</div>
+                                <div class="metric-label">Activities</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-  <!-- Chart -->
-  <section id="chart-wrapper">
-    <canvas id="yearlyChart"></canvas>
-  </section>
+        <!-- Activity Trends Section -->
+        <section class="section" id="activity-trends">
+            <div class="container">
+                <h2>Activity Trends</h2>
+                <div class="glass-card">
+                    <h3>Distance Over Time</h3>
+                    <div class="chart-container">
+                        <canvas id="distance-chart"></canvas>
+                    </div>
+                </div>
+                <div class="glass-card">
+                    <h3>Monthly Comparison</h3>
+                    <div class="chart-container">
+                        <canvas id="monthly-chart"></canvas>
+                    </div>
+                </div>
+                <div class="glass-card">
+                    <h3>Weekly Activity Distribution</h3>
+                    <div class="chart-container">
+                        <canvas id="weekly-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-  <!-- Top Activities -->
-  <section class="grid" id="top-cards"></section>
+        <!-- Featured Activities Section -->
+        <section class="section" id="featured-activities">
+            <div class="container">
+                <h2>Featured Activities</h2>
+                <div class="featured-activities">
+                    <div class="activities-scroll" id="activities-container">
+                        <!-- Activity cards will be dynamically generated -->
+                        <div class="glass-card activity-card">
+                            <img src="assets/activity-placeholder.jpg" alt="Activity" class="activity-image">
+                            <div class="activity-details">
+                                <h3 class="activity-title">Morning Ride</h3>
+                                <div class="activity-date">May 24, 2025</div>
+                                <div class="activity-stats">
+                                    <div>
+                                        <div class="activity-stat-label">Distance</div>
+                                        <div>42.2 km</div>
+                                    </div>
+                                    <div>
+                                        <div class="activity-stat-label">Time</div>
+                                        <div>2h 15m</div>
+                                    </div>
+                                    <div>
+                                        <div class="activity-stat-label">Elevation</div>
+                                        <div>850 m</div>
+                                    </div>
+                                    <div>
+                                        <div class="activity-stat-label">Avg Speed</div>
+                                        <div>18.7 km/h</div>
+                                    </div>
+                                </div>
+                                <a href="#" class="activity-link">View on Strava <i class="fas fa-external-link-alt"></i></a>
+                            </div>
+                        </div>
+                        
+                        <!-- Placeholder cards (will be replaced with real data) -->
+                        <div class="glass-card activity-card">
+                            <img src="assets/activity-placeholder.jpg" alt="Activity" class="activity-image">
+                            <div class="activity-details">
+                                <h3 class="activity-title">Evening Run</h3>
+                                <div class="activity-date">May 22, 2025</div>
+                                <div class="activity-stats">
+                                    <div>
+                                        <div class="activity-stat-label">Distance</div>
+                                        <div>10.5 km</div>
+                                    </div>
+                                    <div>
+                                        <div class="activity-stat-label">Time</div>
+                                        <div>53m 20s</div>
+                                    </div>
+                                    <div>
+                                        <div class="activity-stat-label">Elevation</div>
+                                        <div>120 m</div>
+                                    </div>
+                                    <div>
+                                        <div class="activity-stat-label">Avg Pace</div>
+                                        <div>5:05 /km</div>
+                                    </div>
+                                </div>
+                                <a href="#" class="activity-link">View on Strava <i class="fas fa-external-link-alt"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-  <!-- Scripts -->
-  <script src="src/config.js"></script>
-  <script src="src/utils.js"></script>
-  <script src="src/strava-api.js"></script>
-  <script src="src/data-aggregation.js"></script>
-  <script src="src/rendering.js"></script>
-  <script src="src/app.js"></script>
+        <!-- Achievements Section -->
+        <section class="section" id="achievements">
+            <div class="container">
+                <h2>Achievements & Milestones</h2>
+                <div class="glass-card">
+                    <div class="achievements-grid" id="achievements-container">
+                        <!-- Achievement items will be dynamically generated -->
+                        <div class="achievement">
+                            <div class="achievement-icon">
+                                <i class="fas fa-award"></i>
+                            </div>
+                            <div class="achievement-title">1000km Club</div>
+                            <div class="achievement-description">Ride 1000km in a year</div>
+                            <div class="achievement-progress">
+                                <div class="achievement-progress-bar" style="width: 75%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="achievement">
+                            <div class="achievement-icon">
+                                <i class="fas fa-mountain"></i>
+                            </div>
+                            <div class="achievement-title">Everesting</div>
+                            <div class="achievement-description">Climb 8848m in a single ride</div>
+                            <div class="achievement-progress">
+                                <div class="achievement-progress-bar" style="width: 25%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="achievement achievement-locked">
+                            <div class="achievement-icon">
+                                <i class="fas fa-stopwatch"></i>
+                            </div>
+                            <div class="achievement-title">Sub-20 5K</div>
+                            <div class="achievement-description">Run 5K in under 20 minutes</div>
+                            <div class="achievement-progress">
+                                <div class="achievement-progress-bar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Personal Records Section -->
+        <section class="section" id="personal-records">
+            <div class="container">
+                <h2>Personal Records</h2>
+                <div class="glass-card">
+                    <h3>Running</h3>
+                    <ul class="records-list" id="running-records">
+                        <li class="record-item">
+                            <span class="record-title">Marathon</span>
+                            <span class="record-value">3:45:22</span>
+                        </li>
+                        <li class="record-item">
+                            <span class="record-title">Half Marathon</span>
+                            <span class="record-value">1:42:15</span>
+                        </li>
+                        <li class="record-item">
+                            <span class="record-title">10K</span>
+                            <span class="record-value">45:30</span>
+                        </li>
+                        <li class="record-item">
+                            <span class="record-title">5K</span>
+                            <span class="record-value">21:45</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="glass-card">
+                    <h3>Cycling</h3>
+                    <ul class="records-list" id="cycling-records">
+                        <li class="record-item">
+                            <span class="record-title">Longest Ride</span>
+                            <span class="record-value">160.5 km</span>
+                        </li>
+                        <li class="record-item">
+                            <span class="record-title">Most Elevation</span>
+                            <span class="record-value">2,450 m</span>
+                        </li>
+                        <li class="record-item">
+                            <span class="record-title">Fastest 40K</span>
+                            <span class="record-value">1:05:22</span>
+                        </li>
+                        <li class="record-item">
+                            <span class="record-title">Best Avg Power</span>
+                            <span class="record-value">245 W</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="glass-card">
+                    <h3>Swimming</h3>
+                    <ul class="records-list" id="swimming-records">
+                        <li class="record-item">
+                            <span class="record-title">Longest Swim</span>
+                            <span class="record-value">3,000 m</span>
+                        </li>
+                        <li class="record-item">
+                            <span class="record-title">Fastest 100m</span>
+                            <span class="record-value">1:25</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Segment Analysis Section -->
+        <section class="section" id="segment-analysis">
+            <div class="container">
+                <h2>Segment Analysis</h2>
+                <div class="glass-card">
+                    <div id="segments-container">
+                        <!-- Segment items will be dynamically generated -->
+                        <div class="segment-card">
+                            <div class="segment-header">
+                                <div class="segment-name">Alpe d'Huez</div>
+                                <div class="segment-count">5</div>
+                            </div>
+                            <div class="segment-details">
+                                <div>Best time: 58:30 | Last attempt: 1:02:15</div>
+                            </div>
+                        </div>
+                        
+                        <div class="segment-card">
+                            <div class="segment-header">
+                                <div class="segment-name">Col du Galibier</div>
+                                <div class="segment-count">2</div>
+                            </div>
+                            <div class="segment-details">
+                                <div>Best time: 1:25:45 | Last attempt: 1:30:22</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>Data last updated: <span id="last-updated">May 24, 2025</span></p>
+            <p>Powered by <a href="https://www.strava.com" target="_blank">Strava API</a> | <a href="https://github.com/username/strava-dashboard" target="_blank">GitHub Repository</a></p>
+        </div>
+    </footer>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-item" data-section="year-overview">
+            <div class="nav-icon"><i class="fas fa-chart-line"></i></div>
+            <div class="nav-label">Overview</div>
+        </div>
+        <div class="nav-item" data-section="activity-trends">
+            <div class="nav-icon"><i class="fas fa-chart-bar"></i></div>
+            <div class="nav-label">Trends</div>
+        </div>
+        <div class="nav-item" data-section="featured-activities">
+            <div class="nav-icon"><i class="fas fa-list"></i></div>
+            <div class="nav-label">Activities</div>
+        </div>
+        <div class="nav-item" data-section="achievements">
+            <div class="nav-icon"><i class="fas fa-trophy"></i></div>
+            <div class="nav-label">Achievements</div>
+        </div>
+        <div class="nav-item" data-section="personal-records">
+            <div class="nav-icon"><i class="fas fa-medal"></i></div>
+            <div class="nav-label">Records</div>
+        </div>
+    </nav>
+
+    <!-- Back to Top Button -->
+    <div class="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="js/main.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/data-integration.js"></script>
 </body>
 </html>
